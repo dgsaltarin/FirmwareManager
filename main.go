@@ -1,8 +1,7 @@
 package main
 
 import (
-	"github.com/dgsaltarin/SharedBitesBackend/dc-nearshore/controllers"
-
+	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/controllers"
 	"github.com/gin-gonic/gin"
 )
 

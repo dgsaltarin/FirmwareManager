@@ -7,10 +7,10 @@ import (
 )
 
 type User struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID       string `json:"id" gorm:"primaryKey"`
+	Username string `json:"username" gorm:"not null"`
+	Email    string `json:"email" gorm:"not null"`
+	Password string `json:"password" gorm:"not null"`
 }
 
 // GeneratePasswordHash generates a hash for the password

@@ -40,7 +40,7 @@ func Authorize(c *gin.Context) {
 		fmt.Println(claims["sub"].(string))
 
 		// new dynamodb database
-		dynamodb, err := db.Connect()
+		postgres, err := db.Connect()
 		if err != nil {
 			c.JSON(500, gin.H{
 				"message": "Error connecting to database",

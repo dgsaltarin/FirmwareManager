@@ -5,8 +5,8 @@ import (
 )
 
 type Device struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name" sql:"NOT NULL"`
+	ID        string    `json:"id" gorm:"primaryKey"`
+	Name      string    `json:"name" gorm:"not null"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

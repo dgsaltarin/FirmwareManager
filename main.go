@@ -2,7 +2,9 @@ package main
 
 import (
 	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/controllers"
+	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/db"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 type RequestBody struct {
@@ -10,12 +12,16 @@ type RequestBody struct {
 }
 
 func main() {
+	godotenv.Load()
+
+	db.Connect()
+
 	router := gin.Default()
 
 	router.GET("/healthcheck", controllers.HealthCheck())
-	router.GET("/devices", controllers.CreateDevice())
+	router.GET("/devices", controllers.GetAllDevices())
 	router.POST("/devices", controllers.CreateDevice())
-	router.GET("/devices", controllers.GetDeviceByID())
+	router.GET("/devices:id", controllers.GetDeviceByID())
 	// router.PUT("/devices:id", controllers.CreateUser())
 	// router.DELETE("/devices:id", controllers.CreateUser())
 	// router.GET("/firmwares", controllers.UploadImage())

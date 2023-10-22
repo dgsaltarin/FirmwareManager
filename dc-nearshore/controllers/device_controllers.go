@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/db"
 	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/models"
@@ -19,10 +20,12 @@ func CreateDevice() gin.HandlerFunc {
 			return
 		}
 
-		// add uuid to user
+		// add infor to device
 		device.ID = uuid.New().String()
+		device.CreatedAt = time.Now()
+		device.UpdatedAt = time.Now()
 
-		// create new user in database
+		// create new device in database
 		db.DB.Create(&device)
 
 		c.JSON(http.StatusCreated, gin.H{

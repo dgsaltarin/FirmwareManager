@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/controllers"
 	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/db"
+	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -19,18 +20,18 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/healthcheck", controllers.HealthCheck())
-	router.GET("/devices", controllers.GetAllDevices())
-	router.POST("/devices", controllers.CreateDevice())
-	router.GET("/devices/", controllers.GetDeviceByID())
-	router.PUT("/devices/", controllers.UpdateDeviceByID())
-	router.DELETE("/devices/", controllers.DeleteDeviceByID())
-	router.GET("/firmwares", controllers.GetAllFirmwares())
-	router.POST("/firmwares", controllers.CreateFirmware())
-	router.GET("/firmwares/", controllers.GetFirmwareByID())
-	router.PUT("/firmwares/", controllers.UpdateFirmwareByID())
-	router.DELETE("/firmwares/", controllers.DeleteFirmwareByID())
-	router.POST("/login", controllers.Login())
-	router.POST("/signup", controllers.SignUp())
+	router.GET("/devices", middlewares.Authorize, controllers.GetAllDevices())
+	router.POST("/devices", middlewares.Authorize, controllers.CreateDevice())
+	router.GET("/devices/", middlewares.Authorize, controllers.GetDeviceByID())
+	router.PUT("/devices/", middlewares.Authorize, controllers.UpdateDeviceByID())
+	router.DELETE("/devices/", middlewares.Authorize, controllers.DeleteDeviceByID())
+	router.GET("/firmwares", middlewares.Authorize, controllers.GetAllFirmwares())
+	router.POST("/firmwares", middlewares.Authorize, controllers.CreateFirmware())
+	router.GET("/firmwares/", middlewares.Authorize, controllers.GetFirmwareByID())
+	router.PUT("/firmwares/", middlewares.Authorize, controllers.UpdateFirmwareByID())
+	router.DELETE("/firmwares/", middlewares.Authorize, controllers.DeleteFirmwareByID())
+	router.POST("/login", middlewares.Authorize, controllers.Login())
+	router.POST("/signup", middlewares.Authorize, controllers.SignUp())
 
 	router.Run()
 }

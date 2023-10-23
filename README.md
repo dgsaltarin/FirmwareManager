@@ -20,15 +20,11 @@ Explain how to get your project up and running. Include information about prereq
 
 ### Prerequisites
 
-List any software or tools that need to be installed before running your project.
-
 - Go (version 1.20)
 - Gin (version 1.9.0)
-- ...
+- Postgres
 
 ### Installation
-
-Provide step-by-step instructions on how to install and configure your project.
 
 ```bash
 # Clone the repository

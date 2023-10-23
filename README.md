@@ -1,6 +1,6 @@
 # Project Name
 
-Brief project description.
+Firmware manager for devices
 
 ## Table of Contents
 

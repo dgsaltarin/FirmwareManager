@@ -2,12 +2,10 @@ package controllers
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/db"
 	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/models"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 // Create Device method
@@ -20,13 +18,14 @@ func CreateDevice() gin.HandlerFunc {
 			return
 		}
 
-		// add infor to device
-		device.ID = uuid.New().String()
-		device.CreatedAt = time.Now()
-		device.UpdatedAt = time.Now()
-
 		// create new device in database
-		db.DB.Create(&device)
+		device, err := db.CreateDevice(device)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "error creating device",
+			})
+			return
+		}
 
 		c.JSON(http.StatusCreated, gin.H{
 			"message": "Devide created successfully",
@@ -42,7 +41,7 @@ func GetDeviceByID() gin.HandlerFunc {
 		var device models.Device
 
 		// get users from database
-		if err := db.DB.Where("id = ?", deviceID).First(&device).Error; err != nil {
+		if _, err := db.GetDeviceByID(deviceID); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "device not found",
 			})
@@ -61,7 +60,12 @@ func GetAllDevices() gin.HandlerFunc {
 		var devices []models.Device
 
 		// get users from database
-		db.DB.Find(&devices)
+		if _, err := db.GetAllDevices(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "devices not found",
+			})
+			return
+		}
 
 		c.JSON(http.StatusOK, gin.H{
 			"devices": devices,

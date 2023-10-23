@@ -2,12 +2,10 @@ package controllers
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/db"
 	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/models"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 // Create new Firmware in database
@@ -20,13 +18,14 @@ func CreateFirmware() gin.HandlerFunc {
 			return
 		}
 
-		// add infor to firmware
-		firmware.ID = uuid.New().String()
-		firmware.CreatedAt = time.Now()
-		firmware.UpdatedAt = time.Now()
-
 		// create new firmware in database
-		db.DB.Create(&firmware)
+		firmware, err := db.CreateFirmware(firmware)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "error creating firmware",
+			})
+			return
+		}
 
 		c.JSON(http.StatusCreated, gin.H{
 			"message": "Firmware created successfully",
@@ -41,8 +40,9 @@ func GetFirmwareByID() gin.HandlerFunc {
 		firmwareID := c.Query("id")
 		var firmware models.Firmware
 
-		// get users from database
-		if err := db.DB.Where("id = ?", firmwareID).First(&firmware).Error; err != nil {
+		// get firmware from database
+		firmware, err := db.GetFirmwareByID(firmwareID)
+		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "firmware not found",
 			})
@@ -61,7 +61,8 @@ func GetAllFirmwares() gin.HandlerFunc {
 		var firmwares []models.Firmware
 
 		// get users from database
-		if err := db.DB.Find(&firmwares).Error; err != nil {
+		firmwares, err := db.GetAllFirmwares()
+		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "firmwares not found",
 			})

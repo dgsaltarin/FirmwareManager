@@ -49,3 +49,24 @@ func GetUserByID() gin.HandlerFunc {
 		})
 	}
 }
+
+// get user by username	
+func GetUserByUsername() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Get the query parameter value from the request
+		username := c.Query("username")
+		var user models.User
+
+		// get users from database
+		if err := db.DB.Where("username = ?", username).First(&user).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "user not found",
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"users": user,
+		})
+	}
+}

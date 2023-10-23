@@ -68,3 +68,56 @@ func GetAllDevices() gin.HandlerFunc {
 		})
 	}
 }
+
+// Delete Device by ID method
+func DeleteDeviceByID() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Get the query parameter value from the request
+		deviceID := c.Query("id")
+
+		//check if device exists
+		if _, err := db.GetDeviceByID(deviceID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "device not found",
+			})
+			return
+		}
+
+		// delete device from database
+		db.DeleteDeviceByID(deviceID)
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "device deleted successfully",
+		})
+	}
+}
+
+// Update Device by ID method
+func UpdateDeviceByID() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Get the query parameter value from the request
+		deviceID := c.Query("id")
+
+		//check if device exists
+		if _, err := db.GetDeviceByID(deviceID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "device not found",
+			})
+			return
+		}
+
+		// bin user info from request
+		var device models.Device
+		if err := c.ShouldBindJSON(&device); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// update device in database
+		db.UpdateDeviceByID(deviceID, device)
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "device updated successfully",
+		})
+	}
+}

@@ -1,36 +1,37 @@
 package db
 
-import (
-	"github.com/google/uuid"
-	"gorm.io/gorm"
+import "github.com/dgsaltarin/FirmwareManager/dc-nearshore/models"
 
-	"github.com/dgsaltarin/FirmwareManager/dc-nearshore/models"
-)
-
-// CreateFirmware creates a new firmware record in the database.
-func CreateFirmware(db *gorm.DB, firmware *models.Firmware) error {
-	result := db.Create(firmware)
-	return result.Error
-}
-
-// GetFirmwareByID retrieves a firmware record from the database by its ID.
-func GetFirmwareByID(db *gorm.DB, id uuid.UUID) (*models.Firmware, error) {
+// GetFirmwareByID method
+func GetFirmwareByID(firmwareID string) (models.Firmware, error) {
 	var firmware models.Firmware
-	result := db.First(&firmware, id)
-	if result.Error != nil {
-		return nil, result.Error
+
+	// get firmware from database
+	if err := DB.Where("id = ?", firmwareID).First(&firmware).Error; err != nil {
+		return firmware, err
 	}
-	return &firmware, nil
+
+	return firmware, nil
 }
 
-// UpdateFirmware updates an existing firmware record in the database.
-func UpdateFirmware(db *gorm.DB, firmware *models.Firmware) error {
-	result := db.Save(firmware)
-	return result.Error
+// Delete Firmware by ID method
+func DeleteFirmwareByID(firmwareID string) error {
+	var firmware models.Firmware
+
+	// get firmware from database
+	if err := DB.Where("id = ?", firmwareID).Delete(&firmware).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
-// DeleteFirmware deletes a firmware record from the database by its ID.
-func DeleteFirmware(db *gorm.DB, id uuid.UUID) error {
-	result := db.Delete(&models.Firmware{}, id)
-	return result.Error
+// Update Firmware by ID method
+func UpdateFirmwareByID(firmwareID string, firmware models.Firmware) error {
+	// update firmware in database
+	if err := DB.Model(&firmware).Where("id = ?", firmwareID).Updates(firmware).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
